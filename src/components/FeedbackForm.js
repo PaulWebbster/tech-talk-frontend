@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 
 function Feedback() {
@@ -8,6 +8,16 @@ function Feedback() {
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [summaryRating, setSummaryRating] = useState(null);
+
+  useEffect(() => {
+    fetch(`https://akhenr2oenza574lweyxuo2c240smjjd.lambda-url.eu-west-1.on.aws/conferences/${conferenceId}/rating`)
+      .then(response => response.json())
+      .then(data => {
+        setSummaryRating(data);
+      })
+      .catch(error => console.error('Error fetching summary rating:', error));
+  }, [conferenceId]);
 
   const handleStarClick = (index) => {
     setRating(index + 1);
@@ -73,6 +83,11 @@ function Feedback() {
         </div>
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>
+      {summaryRating !== null && (
+        <div className="mt-4">
+          <h4>Summary Rating: {summaryRating === 0 ? 'No ratings yet' : summaryRating.toFixed(1)}</h4>
+        </div>
+      )}
     </div>
   );
 }
