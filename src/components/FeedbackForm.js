@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ReactStars from 'react-rating-stars-component';
 
 function FeedbackForm() {
+  const [rating, setRating] = useState(0);
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
   return (
     <div className="container mt-4">
       <h2>Submit Feedback</h2>
@@ -14,7 +21,12 @@ function FeedbackForm() {
         </div>
         <div className="mb-3">
           <label className="form-label">Rating:</label>
-          <input type="number" className="form-control" min="1" max="5" required />
+          <ReactStars
+            count={5}
+            onChange={handleRatingChange}
+            size={24}
+            activeColor="#ffd700"
+          />
         </div>
         <div className="mb-3">
           <label className="form-label">Comment:</label>
