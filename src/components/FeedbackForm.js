@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 function Feedback() {
   const { conferenceId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const conferenceName = location.state?.name || 'Conference';
 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [summaryRating, setSummaryRating] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     fetch(`https://akhenr2oenza574lweyxuo2c240smjjd.lambda-url.eu-west-1.on.aws/conferences/${conferenceId}/rating`)
@@ -17,6 +20,13 @@ function Feedback() {
         setSummaryRating(data);
       })
       .catch(error => console.error('Error fetching summary rating:', error));
+
+    fetch(`https://akhenr2oenza574lweyxuo2c240smjjd.lambda-url.eu-west-1.on.aws/conferences/${conferenceId}/comments`)
+      .then(response => response.json())
+      .then(data => {
+        setComments(data);
+      })
+      .catch(error => console.error('Error fetching comments:', error));
   }, [conferenceId]);
 
   const handleStarClick = (index) => {
@@ -42,10 +52,17 @@ function Feedback() {
       .then(response => response.json())
       .then(data => {
         console.log('Feedback submitted:', data);
-        // Handle success (e.g., redirect or show a success message)
+        setSubmitted(true);
+        setTimeout(() => {
+          navigate('/');
+        }, 5000);
       })
       .catch(error => console.error('Error submitting feedback:', error));
   };
+
+  if (submitted) {
+    return <div className="container mt-4"><h2>Thanks for your comment!</h2></div>;
+  }
 
   return (
     <div className="container mt-4">
@@ -86,6 +103,18 @@ function Feedback() {
       {summaryRating !== null && (
         <div className="mt-4">
           <h4>Summary Rating: {summaryRating === 0 ? 'No ratings yet' : summaryRating.toFixed(1)}</h4>
+        </div>
+      )}
+      {comments.length > 0 && (
+        <div className="mt-4">
+          <h4>User Comments:</h4>
+          <ul>
+            {comments.map((c, index) => (
+              <li key={index}>
+                <strong>Rating:</strong> {c.rating} - <strong>Comment:</strong> {c.comment}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
