@@ -42,7 +42,7 @@ function ConferenceList() {
               <td>{conference.keywords}</td>
               <td>{conference.location}</td>
               <td>
-                <Link to="/feedback" className="btn btn-primary">
+                <Link to={`/feedback/${conference.id}`} state={{ name: conference.name }} className="btn btn-primary">
                   Rate
                 </Link>
               </td>

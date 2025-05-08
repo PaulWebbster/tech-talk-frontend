@@ -1,36 +1,75 @@
 import React, { useState } from 'react';
-import ReactStars from 'react-rating-stars-component';
+import { useParams, useLocation } from 'react-router-dom';
 
-function FeedbackForm() {
+function Feedback() {
+  const { conferenceId } = useParams();
+  const location = useLocation();
+  const conferenceName = location.state?.name || 'Conference';
+
   const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
-  const handleRatingChange = (newRating) => {
-    setRating(newRating);
+  const handleStarClick = (index) => {
+    setRating(index + 1);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const feedbackData = {
+      conferenceId,
+      rating,
+      comment,
+    };
+
+    fetch('https://akhenr2oenza574lweyxuo2c240smjjd.lambda-url.eu-west-1.on.aws/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(feedbackData),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Feedback submitted:', data);
+        // Handle success (e.g., redirect or show a success message)
+      })
+      .catch(error => console.error('Error submitting feedback:', error));
   };
 
   return (
     <div className="container mt-4">
       <h2>Submit Feedback</h2>
-      <form>
-        <div className="mb-3">
-          <label className="form-label">Conference:</label>
-          <select className="form-select">
-            <option value="cloud-conference-1">Cloud Conference 1</option>
-            <option value="cloud-conference-2">Cloud Conference 2</option>
-          </select>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Conference:</label>
+          <input type="text" className="form-control" value={conferenceName} readOnly />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Rating:</label>
-          <ReactStars
-            count={5}
-            onChange={handleRatingChange}
-            size={24}
-            activeColor="#ffd700"
+        <div className="form-group">
+          <label>Rating:</label>
+          <div>
+            {[...Array(5)].map((star, index) => (
+              <span
+                key={index}
+                onClick={() => handleStarClick(index)}
+                style={{
+                  cursor: 'pointer',
+                  color: index < rating ? 'gold' : 'gray',
+                  fontSize: '1.5rem',
+                }}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Comment:</label>
+          <textarea
+            className="form-control"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
           />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Comment:</label>
-          <textarea className="form-control" required></textarea>
         </div>
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>
@@ -38,4 +77,4 @@ function FeedbackForm() {
   );
 }
 
-export default FeedbackForm;
+export default Feedback;
