@@ -13,6 +13,13 @@ export class MyStaticSiteStack extends cdk.Stack {
       publicReadAccess: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS,
+      cors: [
+        {
+          allowedOrigins: ['*'], // Replace '*' with your domain for better security
+          allowedMethods: [s3.HttpMethods.GET],
+          allowedHeaders: ['*'],
+        },
+      ],
     });
 
     // Output the website URL

@@ -2,6 +2,7 @@
   "name": "conference-feedback",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://akhenr2oenza574lweyxuo2c240smjjd.lambda-url.eu-west-1.on.aws",
   "dependencies": {
     "bootstrap": "^5.3.6",
     "react": "^18.0.0",

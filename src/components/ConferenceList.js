@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function ConferenceList() {
-  const conferences = [
-    {
-      id: 1,
-      name: 'Cloud Conference 1',
-      date: '2023-11-01',
-      keywords: 'AWS, Azure, GCP',
-      location: 'New York, USA',
-    },
-    {
-      id: 2,
-      name: 'Cloud Conference 2',
-      date: '2023-12-15',
-      keywords: 'Kubernetes, Docker, DevOps',
-      location: 'London, UK',
-    },
-  ];
+  const [conferences, setConferences] = useState([]);
+
+  useEffect(() => {
+    fetch('https://akhenr2oenza574lweyxuo2c240smjjd.lambda-url.eu-west-1.on.aws/conferences')
+      .then(response => response.json())
+      .then(data => {
+        // Map the response to match the existing structure
+        const formattedConferences = data.map(conference => ({
+          id: conference.conferenceId,
+          name: conference.name,
+          date: conference.date,
+          keywords: conference.keywords,
+          location: 'TBD', // Assuming location is not provided in the response
+        }));
+        setConferences(formattedConferences);
+      })
+      .catch(error => console.error('Error fetching conferences:', error));
+  }, []);
 
   return (
     <div className="container mt-4">
