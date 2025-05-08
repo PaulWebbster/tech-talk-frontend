@@ -2,28 +2,28 @@ import React from 'react';
 
 function FeedbackForm() {
   return (
-    <div>
+    <div className="container mt-4">
       <h2>Submit Feedback</h2>
       <form>
-        <div>
-          <label>Conference:</label>
-          <select>
+        <div className="mb-3">
+          <label className="form-label">Conference:</label>
+          <select className="form-select">
             <option value="cloud-conference-1">Cloud Conference 1</option>
             <option value="cloud-conference-2">Cloud Conference 2</option>
           </select>
         </div>
-        <div>
-          <label>Rating:</label>
-          <input type="number" min="1" max="5" required />
+        <div className="mb-3">
+          <label className="form-label">Rating:</label>
+          <input type="number" className="form-control" min="1" max="5" required />
         </div>
-        <div>
-          <label>Comment:</label>
-          <textarea required></textarea>
+        <div className="mb-3">
+          <label className="form-label">Comment:</label>
+          <textarea className="form-control" required></textarea>
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" className="btn btn-primary">Submit</button>
       </form>
     </div>
   );
 }
 
-export default FeedbackForm; 
+export default FeedbackForm;
